@@ -65,7 +65,6 @@ const filterButtons = [...document.querySelectorAll('.tools button:not(.search)'
 let bag = [];
 let activeFilter = 'TODOS';
 let quickSelection = null;
-let quickQuantityMorph = null;
 const selectedCardColors = new Map();
 
 const uxStyle = document.createElement('style');
@@ -256,7 +255,6 @@ function openQuickView(id) {
 function renderQuickView() {
   const { product, size, colorIndex, quantity } = quickSelection;
   quickView.innerHTML = `<div class="quick-image ${product.image}" style="background-image:url('${catalogImage(product, colorIndex)}')"></div><div class="quick-content"><button class="quick-close" data-close-quick aria-label="Cerrar selector">×</button><p class="quick-type">${product.type}</p><h2 class="quick-title">${product.name}</h2><p class="quick-price">${product.price ? priceLabel(product.price) : 'PRESUPUESTO SEGÚN CANTIDAD Y ESTAMPA'}</p><span class="option-label">COLOR</span><div class="option-row">${product.colors.map((color, index) => `<button class="variant color-choice ${index === colorIndex ? 'is-selected' : ''}" data-color="${index}"><i class="color-dot" style="background:${color}"></i>${product.colorNames[index]}</button>`).join('')}</div><span class="option-label">TALLE</span><div class="option-row">${product.sizes.map((item) => `<button class="variant ${item === size ? 'is-selected' : ''}" data-size="${item}">${item}</button>`).join('')}</div><a href="#" class="quick-guide">GUÍA DE TALLES ↗</a><div class="quick-quantity-row"><span class="option-label">CANTIDAD</span><div class="quantity quick-quantity" aria-label="Cantidad de ${product.name}"><button type="button" data-quick-quantity="-1" aria-label="Quitar una unidad">−</button><span data-quick-quantity-value>${quantity}</span><button type="button" data-quick-quantity="1" aria-label="Sumar una unidad">+</button></div></div><button class="quick-add" data-add-variant><span data-quick-add-label>SUMAR ${quantity} AL PEDIDO</span><span>+</span></button><p class="quick-note">TODAS LAS PRENDAS PUEDEN PERSONALIZARSE. EL VALOR FINAL DEPENDE DE CANTIDAD, ESTAMPA Y TÉCNICA.</p></div>`;
-  quickQuantityMorph = new TextMorph({ element: quickView.querySelector('[data-quick-quantity-value]'), duration: 220, ease: 'cubic-bezier(.16, 1, .3, 1)', locale: 'es-AR' });
 }
 
 function visibleProducts() {
@@ -337,7 +335,7 @@ quickView.addEventListener('click', (event) => {
   if (target.dataset.closeQuick !== undefined) return toggleQuick(false);
   if (target.dataset.color !== undefined) { quickSelection.colorIndex = Number(target.dataset.color); return renderQuickView(); }
   if (target.dataset.size !== undefined) { quickSelection.size = target.dataset.size; return renderQuickView(); }
-  if (target.dataset.quickQuantity !== undefined) { quickSelection.quantity = Math.max(1, quickSelection.quantity + Number(target.dataset.quickQuantity)); quickQuantityMorph?.update(quickSelection.quantity); quickView.querySelector('[data-quick-add-label]').textContent = `SUMAR ${quickSelection.quantity} AL PEDIDO`; return; }
+  if (target.dataset.quickQuantity !== undefined) { quickSelection.quantity = Math.max(1, quickSelection.quantity + Number(target.dataset.quickQuantity)); const quantityValue = quickView.querySelector('[data-quick-quantity-value]'); quantityValue.textContent = quickSelection.quantity; animate(quantityValue, { opacity: [.25, 1], y: [-4, 0], scale: [.9, 1] }, { duration: .2, ease: [.16, 1, .3, 1] }); quickView.querySelector('[data-quick-add-label]').textContent = `SUMAR ${quickSelection.quantity} AL PEDIDO`; return; }
   if (target.dataset.addVariant !== undefined) { addProduct(quickSelection.product, quickSelection.size, quickSelection.colorIndex, quickSelection.quantity); return toggleQuick(false); }
   if (target.classList.contains('quick-guide')) { event.preventDefault(); openSizeGuide(quickSelection.product); }
 });
