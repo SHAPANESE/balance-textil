@@ -188,7 +188,7 @@ uxStyle.textContent = `
     .topbar nav a::after, .footer-info nav a::after, .editorial a::after { content: ''; position: absolute; right: 0; bottom: -5px; left: 0; height: 1px; background: currentColor; transform: scaleX(0); transform-origin: right; transition: transform .32s cubic-bezier(.16,1,.3,1); }
     .topbar nav a:hover::after, .footer-info nav a:hover::after, .editorial a:hover::after { transform: scaleX(1); transform-origin: left; }
     .custom-image, .editorial figure { transition: filter .7s ease, transform .8s cubic-bezier(.16,1,.3,1); }
-    .custom:hover .custom-image, .editorial:hover figure { filter: grayscale(0) contrast(1.05); transform: scale(.985); }
+    .custom:hover .custom-image, .editorial:hover figure { filter: grayscale(0) contrast(1.05); transform: none !important; }
   }
   @media (prefers-reduced-motion: reduce) { .film-grain { display: none; } *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; } }
   @media (max-width: 620px) { .quick-view { grid-template-columns: 1fr; max-height: calc(100dvh - 28px); overflow: auto; } .quick-image { min-height: 230px; } .quick-content { padding: 23px; } }
