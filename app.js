@@ -32,7 +32,7 @@ const products = [
 ];
 const money = new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 });
 const priceLabel = (price) => price ? money.format(price) : 'COTIZAR';
-const whatsappNumber = '5422622319015';
+const whatsappNumber = '542262319015';
 products.splice(0, products.length,
   { id: 101, name: 'REMERA REGULAR', type: 'ALGODÓN 24.1 / UNISEX', category: 'REMERAS', price: null, colors: ['#181818'], colorNames: ['NEGRO'], sizes: ['S', 'M', 'L', 'XL', 'XXL'], image: 'tee', asset: './assets/products/p4-0.png' },
   { id: 102, name: 'REMERA REGULAR', type: 'ALGODÓN 24.1 / UNISEX', category: 'REMERAS', price: null, colors: ['#f7f7f2'], colorNames: ['BLANCO'], sizes: ['S', 'M', 'L', 'XL', 'XXL'], image: 'tee', asset: './assets/products/p4-1.png' },
