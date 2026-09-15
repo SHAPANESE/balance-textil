@@ -79,7 +79,7 @@ uxStyle.textContent = `
   .balance-hero { min-height: 650px; display: grid; grid-template-columns: 1fr 1fr; border-bottom: 2px solid #111; }
   .balance-hero > div { padding: 9vw 6vw; display: flex; flex-direction: column; align-items: flex-start; }
   .balance-hero h1 { margin: 22px 0; font: clamp(62px,8vw,128px)/.82 Anton,sans-serif; }
-  .hero-word { position: relative; display: inline-block; width: 7.4ch; height: .88em; overflow: hidden; vertical-align: -.02em; }
+  .hero-word { position: relative; display: inline-block; width: 7.4ch; height: 1em; overflow: hidden; vertical-align: -.04em; }
   .hero-word-item { position: absolute; top: 0; left: 0; width: 100%; white-space: nowrap; line-height: 1; will-change: transform, filter, opacity; }
   .balance-hero > div > p:not(.mono) { max-width: 310px; margin: 0; font-size: 14px; line-height: 1.4; }
   .hero-link { display: flex; justify-content: space-between; width: 208px; margin-top: 32px; padding: 13px 15px; background: #111; color: #f6f6f3; font: 9px "DM Mono",monospace; }
