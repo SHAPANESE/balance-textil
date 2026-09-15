@@ -1,5 +1,5 @@
-import { TextMorph } from 'torph';
-import { animate, stagger } from 'motion';
+import { TextMorph } from 'https://cdn.jsdelivr.net/npm/torph@0.1.3/+esm';
+import { animate, stagger } from 'https://cdn.jsdelivr.net/npm/motion@13.3.0/+esm';
 
 const products = [
   { id: 1, name: 'REMERA REGULAR', type: 'ALGODÓN 24.1 / UNISEX', category: 'REMERAS', price: null, colors: ['#fafafa', '#181818', '#b6b5af'], colorNames: ['BLANCO', 'NEGRO', 'GRIS MELANGE'], sizes: ['S', 'M', 'L', 'XL', 'XXL'], image: 'tee' },
