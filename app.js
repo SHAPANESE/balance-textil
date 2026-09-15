@@ -1,4 +1,5 @@
 import { TextMorph } from 'torph';
+import { animate, stagger } from 'motion';
 
 const products = [
   { id: 1, name: 'REMERA REGULAR', type: 'ALGODÓN 24.1 / UNISEX', category: 'REMERAS', price: null, colors: ['#fafafa', '#181818', '#b6b5af'], colorNames: ['BLANCO', 'NEGRO', 'GRIS MELANGE'], sizes: ['S', 'M', 'L', 'XL', 'XXL'], image: 'tee' },
@@ -73,6 +74,7 @@ uxStyle.textContent = `
   h1, h2, .footer-word { letter-spacing: .005em !important; }
   h1, h2 { line-height: .96 !important; }
   .product-image { background-size: contain !important; background-repeat: no-repeat; background-color: #f0f0f0; }
+  .product-card { animation: none; }
   .balance-hero { min-height: 650px; display: grid; grid-template-columns: 1fr 1fr; border-bottom: 2px solid #111; }
   .balance-hero > div { padding: 9vw 6vw; display: flex; flex-direction: column; align-items: flex-start; }
   .balance-hero h1 { margin: 22px 0; font: clamp(62px,8vw,128px)/.82 Anton,sans-serif; }
@@ -147,7 +149,8 @@ uxStyle.textContent = `
   .card-color:hover, .card-color.is-selected { outline: 1px solid #111; outline-offset: 3px; transform: scale(.9); }
   .quantity { display: inline-grid; grid-template-columns: 21px 25px 21px; align-items: center; margin-top: 10px; border: 1px solid #aaa; font: 8px "DM Mono", monospace; }
   .quantity button { height: 21px; border: 0; background: transparent; font-size: 15px; line-height: 1; }
-  .quantity span { display: grid; place-items: center; height: 21px; margin: 0 !important; text-align: center; line-height: 1; }
+  .quantity > span { display: grid; place-items: center; height: 21px; margin: 0 !important; text-align: center; line-height: 1; }
+  [torph-sr] { position: absolute !important; width: 1px !important; height: 1px !important; margin: -1px !important; padding: 0 !important; overflow: hidden !important; clip: rect(0 0 0 0) !important; clip-path: inset(50%) !important; white-space: nowrap !important; }
   .cart-progress { display: flex !important; gap: 8px; margin: 0 0 19px; padding-bottom: 12px; border-bottom: 1px solid #b7b7b2; }
   .cart-progress span { padding: 5px 7px; border: 1px solid #aaa; color: #666; font: 7px "DM Mono",monospace; }
   .cart-progress .is-current { border-color: #111; background: #111; color: #f6f6f3; }
@@ -259,6 +262,16 @@ function renderQuickView() {
 function visibleProducts() {
   return activeFilter === 'TODOS' ? products : products.filter((product) => product.category === activeFilter);
 }
+function revealProducts() {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const cards = [...productGrid.querySelectorAll('.product-card')];
+  if (!cards.length) return;
+  const images = cards.map((card) => card.querySelector('.product-image'));
+  const details = cards.flatMap((card) => [card.querySelector('.product-info'), card.querySelector('.swatches')]);
+  animate(cards, { opacity: [0, 1], y: [22, 0] }, { duration: .54, delay: stagger(.065), ease: [.16, 1, .3, 1] });
+  animate(images, { clipPath: ['inset(0 0 100% 0)', 'inset(0 0 0% 0)'], scale: [1.025, 1] }, { duration: .68, delay: stagger(.065), ease: [.16, 1, .3, 1] });
+  animate(details, { opacity: [0, 1], y: [9, 0] }, { duration: .36, delay: stagger(.065, { startDelay: .16 }), ease: [.16, 1, .3, 1] });
+}
 function renderProducts() {
   const shown = visibleProducts();
   document.querySelector('.catalog-title span').textContent = String(shown.length).padStart(2, '0');
@@ -269,6 +282,7 @@ function renderProducts() {
   status.textContent = `${shown.length} ${shown.length === 1 ? 'PRODUCTO' : 'PRODUCTOS'} / ${activeFilter}`;
   productGrid.before(status);
   productGrid.innerHTML = shown.map((product) => { const colorIndex = selectedCardColors.get(product.id) ?? 0; return `<article class="product-card"><button class="product-image ${product.image}" style="--product-image:url('${catalogImage(product, colorIndex)}');background-image:var(--product-image)" data-add="${product.id}" aria-label="Elegir ${product.name}"><span aria-hidden="true">+</span><small>${product.colorNames[colorIndex]}</small></button><div class="product-info"><div><p>${product.type}</p><h3>${product.name}</h3></div><strong>${priceLabel(product.price)}</strong></div><div class="swatches" aria-label="Colores disponibles">${product.colors.map((color, index) => `<button class="card-color ${index === colorIndex ? 'is-selected' : ''}" data-card-color="${index}" data-product="${product.id}" aria-label="${product.colorNames[index]}" style="background:${color}"></button>`).join('')}</div></article>`; }).join('') || '<p class="empty">NO HAY PRODUCTOS EN ESTA CATEGORÍA.</p>';
+  requestAnimationFrame(revealProducts);
 }
 function renderCart() {
   const count = bag.reduce((total, item) => total + item.quantity, 0);

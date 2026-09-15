@@ -3,6 +3,7 @@
   "private": true,
   "type": "module",
   "dependencies": {
+    "motion": "^13.3.0",
     "torph": "^0.1.3"
   }
 }
