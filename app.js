@@ -69,6 +69,8 @@ const selectedCardColors = new Map();
 const uxStyle = document.createElement('style');
 uxStyle.textContent = `
   :focus-visible { outline: 2px solid #111; outline-offset: 3px; }
+  a, a:link, a:visited, a:hover, a:active { color: inherit !important; -webkit-text-fill-color: currentColor; }
+  a, button { -webkit-tap-highlight-color: transparent; }
   h1, h2, .footer-word { letter-spacing: .005em !important; }
   h1, h2 { line-height: .96 !important; }
   .product-image { background-size: contain !important; background-repeat: no-repeat; background-color: #f0f0f0; }
