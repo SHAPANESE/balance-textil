@@ -143,7 +143,7 @@ uxStyle.textContent = `
   .size-disclaimer { margin: 17px 0 0; color: #555; font: 8px/1.45 "DM Mono",monospace; }
   .filter-status { margin: -13px 0 18px; color: #666; font: 8px "DM Mono", monospace; }
   .swatches { align-items: center; }
-  .card-color { width: 13px; height: 13px; padding: 0; border: 1px solid #888; border-radius: 50%; cursor: pointer; transition: transform .2s, outline .2s; }
+  .card-color { appearance: none; -moz-appearance: none; flex: 0 0 13px; width: 13px; min-width: 13px; height: 13px; min-height: 13px; padding: 0; border: 1px solid #888; border-radius: 50%; cursor: pointer; transition: transform .2s, outline .2s; }
   .card-color:hover, .card-color.is-selected { outline: 1px solid #111; outline-offset: 3px; transform: scale(.9); }
   .quantity { display: inline-grid; grid-template-columns: 21px 25px 21px; align-items: center; margin-top: 10px; border: 1px solid #aaa; font: 8px "DM Mono", monospace; }
   .quantity button { height: 21px; border: 0; background: transparent; font-size: 15px; line-height: 1; }
