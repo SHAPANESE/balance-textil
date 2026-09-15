@@ -397,6 +397,7 @@ if (heroWord && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) 
     heroWord.replaceChildren(strip);
     const roll = strip.animate([
       { transform: 'translateY(0)', filter: 'blur(0px)' },
+      { transform: 'translateY(-32%)', filter: 'blur(1.1px)', offset: .56 },
       { transform: 'translateY(-50%)', filter: 'blur(0px)' },
     ], { duration: 440, easing: 'cubic-bezier(.18,.88,.25,1)', fill: 'forwards' });
     roll.finished.then(() => {
