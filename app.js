@@ -398,7 +398,7 @@ if (heroWord && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) 
         { transform: 'translateY(0) scaleY(1)', filter: 'blur(0px)', opacity: 1 },
       ], timing);
     });
-  }, 3200);
+  }, 2100);
 }
 renderProducts();
 renderCart();
