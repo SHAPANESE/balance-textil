@@ -179,7 +179,7 @@ uxStyle.textContent = `
   .cart-item [data-remove] { align-self: start; }
   .empty-action { display: inline-block; margin-top: 14px; padding-bottom: 4px; border-bottom: 1px solid #111; font: 9px "DM Mono", monospace; }
   @media (hover: hover) {
-    .product-image:hover { filter: grayscale(0) contrast(1.05); }
+    .product-image:hover { filter: grayscale(0) contrast(1.05); transform: none !important; }
     .product-card { transition: background .32s ease, box-shadow .32s ease; }
     .product-card:hover { background: #fff; box-shadow: inset 0 0 0 1px #111; }
     .product-card .product-info, .product-card .swatches { transition: transform .38s cubic-bezier(.16,1,.3,1); }
