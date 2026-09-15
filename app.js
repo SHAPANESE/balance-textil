@@ -189,7 +189,6 @@ uxStyle.textContent = `
     .custom-image, .editorial figure { transition: filter .7s ease, transform .8s cubic-bezier(.16,1,.3,1); }
     .custom:hover .custom-image, .editorial:hover figure { filter: grayscale(0) contrast(1.05); transform: scale(.985); }
   }
-  @media (min-width: 701px) { .shell { margin-bottom: 0; border-radius: 9px 9px 0 0; } }
   @media (prefers-reduced-motion: reduce) { .film-grain { display: none; } *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; } }
   @media (max-width: 620px) { .quick-view { grid-template-columns: 1fr; max-height: calc(100dvh - 28px); overflow: auto; } .quick-image { min-height: 230px; } .quick-content { padding: 23px; } }
 `;
