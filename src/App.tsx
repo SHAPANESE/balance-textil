@@ -1,10 +1,10 @@
 import { useMemo, useState } from "react"
 import { Minus, Plus, ShoppingBag, X } from "lucide-react"
-import { Button } from "./components/ui/button"
-import { Badge } from "./components/ui/badge"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./components/ui/dialog"
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "./components/ui/sheet"
-import { ToggleGroup, ToggleGroupItem } from "./components/ui/toggle-group"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 
 type Product = { id: number; name: string; type: string; category: string; sizes: string[]; colors: { name: string; hex: string; image: string }[] }
 const products: Product[] = [
