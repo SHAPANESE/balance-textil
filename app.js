@@ -69,6 +69,7 @@ const sizeGuides = {
   6: { headers: ['TALLE', 'ANCHO', 'LARGO'], rows: [['S','50 cm','67 cm'],['M','53 cm','70 cm'],['L','57 cm','75 cm'],['XL','59 cm','77 cm'],['XXL','64 cm','80 cm']] },
   7: { headers: ['TALLE', 'CINTURA', 'LARGO'], rows: [['S','40 cm','42 cm'],['M','45 cm','45 cm'],['L','50 cm','51 cm'],['XL','55 cm','54 cm']] },
   8: { headers: ['TALLE', 'ANCHO', 'LARGO'], rows: [['S','42 cm','60 cm'],['M','45 cm','63 cm'],['L','47 cm','65 cm'],['XL','50 cm','69 cm'],['XXL','52 cm','70 cm']] },
+  9: { headers: ['TALLE', 'CINTURA', 'SISA', 'LARGO', 'MANGA', 'CUELLO'], rows: [['2','102 cm','104 cm','68 cm','22 cm','44 cm'],['3','106 cm','112 cm','68 cm','22 cm','44 cm'],['4','112 cm','116 cm','71 cm','22 cm','44 cm'],['5','113 cm','114 cm','74 cm','24 cm','44 cm'],['6','120 cm','120 cm','78 cm','25 cm','44 cm'],['8','126 cm','126 cm','82 cm','27 cm','45 cm']] },
   10: { headers: ['TALLE', 'ANCHO', 'LARGO'], rows: [['4','33 cm','43 cm'],['6','35 cm','45 cm'],['8','37 cm','51 cm'],['10','39 cm','53 cm'],['12','41 cm','55 cm'],['14','43 cm','63 cm'],['16','45 cm','64 cm']] }
 };
 const productGrid = document.querySelector('#products');
@@ -307,7 +308,7 @@ function renderCart() {
   updateCounter(document.querySelector('#subtotal'), total ? money.format(total) : 'A COTIZAR');
   document.querySelector('#cartItems').innerHTML = bag.length ? bag.map((item) => `<div class="cart-item"><div class="cart-thumb ${item.image}" style="background-image:url('${item.imageAsset}')"></div><div><p>${item.type}</p><strong>${item.name}</strong><span>${item.colorName} / ${item.size} · ${priceLabel(item.price)}</span><div class="quantity" aria-label="Cantidad de ${item.name}"><button data-change="${item.lineId}" data-delta="-1" aria-label="Quitar una unidad">−</button><span>${item.quantity}</span><button data-change="${item.lineId}" data-delta="1" aria-label="Sumar una unidad">+</button></div></div><button data-remove="${item.lineId}" aria-label="Quitar ${item.name} de la bolsa">×</button></div>`).join('') : '<p class="empty">TU PEDIDO ESTÁ VACÍO.<br/><a href="#shop" class="empty-action" data-close-cart>VER PRENDAS ↓</a></p>';
 }
-function toggleCart(open) { cart.classList.toggle('is-open', open); overlay.classList.toggle('is-open', open); document.querySelector('.floating-cart')?.classList.toggle('is-hidden', open); cart.setAttribute('aria-hidden', String(!open)); }
+function toggleCart(open) { cart.classList.toggle('is-open', open); overlay.classList.toggle('is-open', open); document.querySelector('.floating-cart')?.classList.toggle('is-hidden', open); cart.setAttribute('aria-hidden', String(!open)); if (open) document.querySelector('#closeCart')?.focus(); }
 function addProduct(product, size, colorIndex, quantity = 1) {
   const lineId = `${product.id}-${size}-${colorIndex}`;
   const existing = bag.find((item) => item.lineId === lineId);
@@ -360,7 +361,17 @@ filterButtons.forEach((button) => button.addEventListener('click', () => { activ
 document.querySelector('#bagButton').addEventListener('click', () => toggleCart(true));
 document.querySelector('#closeCart').addEventListener('click', () => toggleCart(false));
 overlay.addEventListener('click', () => { toggleCart(false); toggleQuick(false); sizeGuide.classList.remove('is-open'); });
-document.addEventListener('keydown', (event) => { if (event.key !== 'Escape') return; toggleCart(false); toggleQuick(false); sizeGuide.classList.remove('is-open'); overlay.classList.remove('is-open'); });
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape') { toggleCart(false); toggleQuick(false); sizeGuide.classList.remove('is-open'); overlay.classList.remove('is-open'); return; }
+  if (event.key !== 'Tab') return;
+  const activeDialog = sizeGuide.classList.contains('is-open') ? sizeGuide : quickView.classList.contains('is-open') ? quickView : cart.classList.contains('is-open') ? cart : null;
+  if (!activeDialog) return;
+  const focusable = [...activeDialog.querySelectorAll('button, a[href], input, select, textarea, [tabindex]:not([tabindex="-1"])')].filter((element) => !element.disabled && element.offsetParent !== null);
+  if (!focusable.length) return;
+  const first = focusable[0]; const last = focusable.at(-1);
+  if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+  else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+});
 toast.addEventListener('click', (event) => { if (event.target.dataset.openCart !== undefined) { event.preventDefault(); toggleCart(true); } });
 document.querySelector('.checkout').addEventListener('click', () => { if (!bag.length) return showToast('AGREGÁ UNA PRENDA PARA CONTINUAR.'); const lines = bag.map((item) => `${item.quantity}x ${item.name} / ${item.colorName} / talle ${item.size}`).join('\n'); window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(`Hola Balance Textil, quiero cotizar el siguiente pedido:\n${lines}\n\nQuisiera personalizar estas prendas.`)}`, '_blank'); });
 document.querySelector('.tools .search').addEventListener('click', () => window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent('Hola Balance Textil, quisiera cotizar indumentaria personalizada.')}`, '_blank'));
@@ -370,7 +381,8 @@ const heroWord = document.querySelector('.hero-word');
 const heroWords = ['EQUIPO.', 'EMPRESA.', 'NEGOCIO.', 'MARCA.'];
 let heroWordIndex = 0;
 if (heroWord && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-  setInterval(() => {
+  if (window.balanceHeroWordTimer) clearInterval(window.balanceHeroWordTimer);
+  window.balanceHeroWordTimer = setInterval(() => {
     const wordItem = heroWord.querySelector('.hero-word-item');
     heroWordIndex = (heroWordIndex + 1) % heroWords.length;
     const timing = { duration: 310, easing: 'cubic-bezier(.16, 1, .3, 1)', fill: 'forwards' };
