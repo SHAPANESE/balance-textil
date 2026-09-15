@@ -1,0 +1,8 @@
+{
+  "name": "balance-textil-catalogo",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "torph": "^0.1.3"
+  }
+}

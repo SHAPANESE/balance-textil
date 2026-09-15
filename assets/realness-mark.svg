@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" fill="none">
+  <defs><path id="c" d="M120,120m-84,0a84,84 0 1,1 168,0a84,84 0 1,1-168,0"/></defs>
+  <text fill="currentColor" font-family="Arial,sans-serif" font-size="23" font-weight="700" letter-spacing="3"><textPath href="#c" startOffset="1%">REALNESS REALNESS REALNESS</textPath></text>
+  <path fill="currentColor" d="M81 168V76h43c26 0 43 13 43 35 0 16-9 27-24 32l28 25h-29l-23-23h-12v23H81Zm26-45h16c11 0 18-4 18-13s-7-13-18-13h-16v26Z"/>
+  <path d="M83 65c9-10 22-16 37-16 18 0 34 8 44 22M92 58 86 47m62 10 7-12" stroke="currentColor" stroke-width="4"/>
+</svg>
