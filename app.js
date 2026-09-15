@@ -1,4 +1,20 @@
-import { animate, stagger } from 'https://cdn.jsdelivr.net/npm/motion@13.3.0/+esm';
+// Small local WAAPI helper: the catalog keeps working even if an external CDN is unavailable.
+const stagger = (step, { startDelay = 0 } = {}) => (index) => startDelay + index * step;
+function animate(targets, values, options = {}) {
+  const elements = typeof targets === 'string' ? [...document.querySelectorAll(targets)] : (targets instanceof Element ? [targets] : [...targets]);
+  const pick = (value, index) => Array.isArray(value) ? value[index] : value;
+  const frame = (index) => {
+    const result = {};
+    if (values.opacity !== undefined) result.opacity = pick(values.opacity, index);
+    const transforms = [];
+    if (values.y !== undefined) { const y = pick(values.y, index); transforms.push(`translateY(${typeof y === 'number' ? `${y}px` : y})`); }
+    if (values.scale !== undefined) transforms.push(`scale(${pick(values.scale, index)})`);
+    if (transforms.length) result.transform = transforms.join(' ');
+    return result;
+  };
+  const animations = elements.filter(Boolean).map((element, index) => element.animate([frame(0), frame(1)], { duration: (options.duration ?? .3) * 1000, delay: (typeof options.delay === 'function' ? options.delay(index, elements.length) : options.delay ?? 0) * 1000, easing: Array.isArray(options.ease) ? `cubic-bezier(${options.ease.join(',')})` : options.ease ?? 'ease', fill: 'both' }));
+  return { finished: Promise.all(animations.map((animation) => animation.finished)) };
+}
 
 const products = [
   { id: 1, name: 'REMERA REGULAR', type: 'ALGODÓN 24.1 / UNISEX', category: 'REMERAS', price: null, colors: ['#fafafa', '#181818', '#b6b5af'], colorNames: ['BLANCO', 'NEGRO', 'GRIS MELANGE'], sizes: ['S', 'M', 'L', 'XL', 'XXL'], image: 'tee' },
@@ -61,7 +77,8 @@ const overlay = document.querySelector('#overlay');
 const sectionFilters = ['TODOS', 'REMERAS REGULAR', 'OVERSIZE', 'BERMUDAS', 'MUJER', 'CHOMBAS', 'NIÑOS', 'BUZOS'];
 document.querySelector('.tools').innerHTML = `${sectionFilters.map((section, index) => `<button class="${index === 0 ? 'active' : ''}">${section}</button>`).join('')}<button class="search">COTIZAR　↗</button>`;
 const filterButtons = [...document.querySelectorAll('.tools button:not(.search)')];
-let bag = [];
+const bagStorageKey = 'balance-textil-pedido';
+let bag = (() => { try { return JSON.parse(localStorage.getItem(bagStorageKey)) || []; } catch { return []; } })();
 let activeFilter = 'TODOS';
 let quickSelection = null;
 const selectedCardColors = new Map();
@@ -251,7 +268,7 @@ function openQuickView(id) {
 }
 function renderQuickView() {
   const { product, size, colorIndex, quantity } = quickSelection;
-  quickView.innerHTML = `<div class="quick-image ${product.image}" style="background-image:url('${catalogImage(product, colorIndex)}')"></div><div class="quick-content"><button class="quick-close" data-close-quick aria-label="Cerrar selector">×</button><p class="quick-type">${product.type}</p><h2 class="quick-title">${product.name}</h2><p class="quick-price">${product.price ? priceLabel(product.price) : 'PRESUPUESTO SEGÚN CANTIDAD Y ESTAMPA'}</p><span class="option-label">COLOR</span><div class="option-row">${product.colors.map((color, index) => `<button class="variant color-choice ${index === colorIndex ? 'is-selected' : ''}" data-color="${index}"><i class="color-dot" style="background:${color}"></i>${product.colorNames[index]}</button>`).join('')}</div><span class="option-label">TALLE</span><div class="option-row">${product.sizes.map((item) => `<button class="variant ${item === size ? 'is-selected' : ''}" data-size="${item}">${item}</button>`).join('')}</div><a href="#" class="quick-guide">GUÍA DE TALLES ↗</a><div class="quick-quantity-row"><span class="option-label">CANTIDAD</span><div class="quantity quick-quantity" aria-label="Cantidad de ${product.name}"><button type="button" data-quick-quantity="-1" aria-label="Quitar una unidad">−</button><span data-quick-quantity-value>${quantity}</span><button type="button" data-quick-quantity="1" aria-label="Sumar una unidad">+</button></div></div><button class="quick-add" data-add-variant><span data-quick-add-label>SUMAR ${quantity} AL PEDIDO</span><span>+</span></button><p class="quick-note">TODAS LAS PRENDAS PUEDEN PERSONALIZARSE. EL VALOR FINAL DEPENDE DE CANTIDAD, ESTAMPA Y TÉCNICA.</p></div>`;
+  quickView.innerHTML = `<div class="quick-image ${product.image}" style="background-image:url('${catalogImage(product, colorIndex)}')"></div><div class="quick-content"><button class="quick-close" data-close-quick aria-label="Cerrar selector">×</button><p class="quick-type">${product.type}</p><h2 class="quick-title">${product.name}</h2><p class="quick-price">${product.price ? priceLabel(product.price) : 'PRESUPUESTO SEGÚN CANTIDAD Y ESTAMPA'}</p><span class="option-label">COLOR</span><div class="option-row">${product.colors.map((color, index) => `<button class="variant color-choice ${index === colorIndex ? 'is-selected' : ''}" data-color="${index}" aria-pressed="${index === colorIndex}"><i class="color-dot" style="background:${color}"></i>${product.colorNames[index]}</button>`).join('')}</div><span class="option-label">TALLE</span><div class="option-row">${product.sizes.map((item) => `<button class="variant ${item === size ? 'is-selected' : ''}" data-size="${item}" aria-pressed="${item === size}">${item}</button>`).join('')}</div><a href="#" class="quick-guide">GUÍA DE TALLES ↗</a><div class="quick-quantity-row"><span class="option-label">CANTIDAD</span><div class="quantity quick-quantity" aria-label="Cantidad de ${product.name}"><button type="button" data-quick-quantity="-1" aria-label="Quitar una unidad">−</button><span data-quick-quantity-value>${quantity}</span><button type="button" data-quick-quantity="1" aria-label="Sumar una unidad">+</button></div></div><button class="quick-add" data-add-variant><span data-quick-add-label>SUMAR ${quantity} AL PEDIDO</span><span>+</span></button><p class="quick-note">TODAS LAS PRENDAS PUEDEN PERSONALIZARSE. EL VALOR FINAL DEPENDE DE CANTIDAD, ESTAMPA Y TÉCNICA.</p></div>`;
 }
 
 function visibleProducts() {
@@ -277,10 +294,11 @@ function renderProducts() {
   status.setAttribute('aria-live', 'polite');
   status.textContent = `${shown.length} ${shown.length === 1 ? 'PRODUCTO' : 'PRODUCTOS'} / ${activeFilter}`;
   productGrid.before(status);
-  productGrid.innerHTML = shown.map((product) => { const colorIndex = selectedCardColors.get(product.id) ?? 0; return `<article class="product-card"><button class="product-image ${product.image}" style="--product-image:url('${catalogImage(product, colorIndex)}');background-image:var(--product-image)" data-add="${product.id}" aria-label="Elegir ${product.name}"><span aria-hidden="true">+</span><small>${product.colorNames[colorIndex]}</small></button><div class="product-info"><div><p>${product.type}</p><h3>${product.name}</h3></div><strong>${priceLabel(product.price)}</strong></div><div class="swatches" aria-label="Colores disponibles">${product.colors.map((color, index) => `<button class="card-color ${index === colorIndex ? 'is-selected' : ''}" data-card-color="${index}" data-product="${product.id}" aria-label="${product.colorNames[index]}" style="background:${color}"></button>`).join('')}</div></article>`; }).join('') || '<p class="empty">NO HAY PRODUCTOS EN ESTA CATEGORÍA.</p>';
+  productGrid.innerHTML = shown.map((product) => { const colorIndex = selectedCardColors.get(product.id) ?? 0; return `<article class="product-card"><button class="product-image ${product.image}" style="--product-image:url('${catalogImage(product, colorIndex)}');background-image:var(--product-image)" data-add="${product.id}" aria-label="Elegir ${product.name}"><span aria-hidden="true">+</span><small>${product.colorNames[colorIndex]}</small></button><div class="product-info"><div><p>${product.type}</p><h3>${product.name}</h3></div><strong>${priceLabel(product.price)}</strong></div><div class="swatches" aria-label="Colores disponibles">${product.colors.map((color, index) => `<button class="card-color ${index === colorIndex ? 'is-selected' : ''}" data-card-color="${index}" data-product="${product.id}" aria-label="${product.colorNames[index]}" aria-pressed="${index === colorIndex}" style="background:${color}"></button>`).join('')}</div></article>`; }).join('') || '<p class="empty">NO HAY PRODUCTOS EN ESTA CATEGORÍA.</p>';
   requestAnimationFrame(revealProducts);
 }
 function renderCart() {
+  try { localStorage.setItem(bagStorageKey, JSON.stringify(bag)); } catch {}
   const count = bag.reduce((total, item) => total + item.quantity, 0);
   updateCounter(document.querySelector('#bagCount'), `(${count})`);
   updateCounter(document.querySelector('#bagCountCart'), count);
@@ -312,7 +330,7 @@ productGrid.addEventListener('click', (event) => {
     image.style.setProperty('--product-image', `url('${catalogImage(product, colorIndex)}')`);
     image.style.backgroundImage = 'var(--product-image)';
     card.querySelector('small').textContent = product.colorNames[colorIndex];
-    card.querySelectorAll('[data-card-color]').forEach((swatch) => swatch.classList.toggle('is-selected', swatch === color));
+    card.querySelectorAll('[data-card-color]').forEach((swatch) => { const selected = swatch === color; swatch.classList.toggle('is-selected', selected); swatch.setAttribute('aria-pressed', String(selected)); });
     return;
   }
   const id = Number(event.target.closest('[data-add]')?.dataset.add);
@@ -342,6 +360,7 @@ filterButtons.forEach((button) => button.addEventListener('click', () => { activ
 document.querySelector('#bagButton').addEventListener('click', () => toggleCart(true));
 document.querySelector('#closeCart').addEventListener('click', () => toggleCart(false));
 overlay.addEventListener('click', () => { toggleCart(false); toggleQuick(false); sizeGuide.classList.remove('is-open'); });
+document.addEventListener('keydown', (event) => { if (event.key !== 'Escape') return; toggleCart(false); toggleQuick(false); sizeGuide.classList.remove('is-open'); overlay.classList.remove('is-open'); });
 toast.addEventListener('click', (event) => { if (event.target.dataset.openCart !== undefined) { event.preventDefault(); toggleCart(true); } });
 document.querySelector('.checkout').addEventListener('click', () => { if (!bag.length) return showToast('AGREGÁ UNA PRENDA PARA CONTINUAR.'); const lines = bag.map((item) => `${item.quantity}x ${item.name} / ${item.colorName} / talle ${item.size}`).join('\n'); window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(`Hola Balance Textil, quiero cotizar el siguiente pedido:\n${lines}\n\nQuisiera personalizar estas prendas.`)}`, '_blank'); });
 document.querySelector('.tools .search').addEventListener('click', () => window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent('Hola Balance Textil, quisiera cotizar indumentaria personalizada.')}`, '_blank'));

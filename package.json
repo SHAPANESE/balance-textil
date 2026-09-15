@@ -1,8 +1,5 @@
 {
   "name": "balance-textil-catalogo",
   "private": true,
-  "type": "module",
-  "dependencies": {
-    "motion": "^13.3.0"
-  }
+  "type": "module"
 }
