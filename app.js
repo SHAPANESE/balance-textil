@@ -259,9 +259,9 @@ function revealProducts() {
   const images = cards.map((card) => card.querySelector('.product-image'));
   const details = cards.flatMap((card) => [card.querySelector('.product-info'), card.querySelector('.swatches')]);
   const ease = [.22, 1, .36, 1];
-  animate(cards, { opacity: [0, 1], y: [12, 0], scale: [.992, 1] }, { duration: .64, delay: stagger(.05), ease });
-  animate(images, { opacity: [.76, 1], scale: [1.012, 1] }, { duration: .76, delay: stagger(.05), ease });
-  animate(details, { opacity: [0, 1], y: [5, 0] }, { duration: .46, delay: stagger(.05, { startDelay: .1 }), ease });
+  animate(cards, { opacity: [0, 1], y: [12, 0], scale: [.992, 1] }, { duration: .88, delay: stagger(.09), ease });
+  animate(images, { opacity: [.76, 1], scale: [1.012, 1] }, { duration: 1.04, delay: stagger(.09), ease });
+  animate(details, { opacity: [0, 1], y: [5, 0] }, { duration: .64, delay: stagger(.09, { startDelay: .16 }), ease });
 }
 function renderProducts() {
   const shown = visibleProducts();
