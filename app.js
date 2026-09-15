@@ -79,7 +79,7 @@ uxStyle.textContent = `
   .balance-hero > div { padding: 9vw 6vw; display: flex; flex-direction: column; align-items: flex-start; }
   .balance-hero h1 { margin: 22px 0; font: clamp(62px,8vw,128px)/.82 Anton,sans-serif; }
   .hero-word { position: relative; display: inline-block; width: 7.4ch; height: 1.06em; overflow: hidden; vertical-align: top; }
-  .hero-word-item { position: absolute; top: 0; left: 0; width: 100%; white-space: nowrap; line-height: 1; will-change: transform; }
+  .hero-word-item { position: absolute; top: 0; left: 0; width: 100%; white-space: nowrap; line-height: 1; will-change: transform, filter, opacity; }
   .balance-hero > div > p:not(.mono) { max-width: 310px; margin: 0; font-size: 14px; line-height: 1.4; }
   .hero-link { display: flex; justify-content: space-between; width: 208px; margin-top: 32px; padding: 13px 15px; background: #111; color: #f6f6f3; font: 9px "DM Mono",monospace; }
   .balance-hero figure { position: relative; margin: 0; border-left: 2px solid #111; background: url('./assets/catalog/page-2.png') center/cover; }
@@ -353,12 +353,18 @@ if (heroWord && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) 
   setInterval(() => {
     const wordItem = heroWord.querySelector('.hero-word-item');
     heroWordIndex = (heroWordIndex + 1) % heroWords.length;
-    const timing = { duration: 560, easing: 'cubic-bezier(.22, 1, .36, 1)', fill: 'forwards' };
-    const exit = wordItem.animate([{ transform: 'translateY(0)' }, { transform: 'translateY(-110%)' }], timing);
+    const timing = { duration: 440, easing: 'cubic-bezier(.16, 1, .3, 1)', fill: 'forwards' };
+    const exit = wordItem.animate([
+      { transform: 'translateY(0) scaleY(1)', filter: 'blur(0px)', opacity: 1 },
+      { transform: 'translateY(-112%) scaleY(.96)', filter: 'blur(2px)', opacity: .35 },
+    ], timing);
     exit.finished.then(() => {
       wordItem.textContent = heroWords[heroWordIndex];
       exit.cancel();
-      wordItem.animate([{ transform: 'translateY(110%)' }, { transform: 'translateY(0)' }], timing);
+      wordItem.animate([
+        { transform: 'translateY(112%) scaleY(1.04)', filter: 'blur(2px)', opacity: .35 },
+        { transform: 'translateY(0) scaleY(1)', filter: 'blur(0px)', opacity: 1 },
+      ], timing);
     });
   }, 3200);
 }
