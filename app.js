@@ -258,9 +258,10 @@ function revealProducts() {
   if (!cards.length) return;
   const images = cards.map((card) => card.querySelector('.product-image'));
   const details = cards.flatMap((card) => [card.querySelector('.product-info'), card.querySelector('.swatches')]);
-  animate(cards, { opacity: [0, 1], y: [22, 0] }, { duration: .54, delay: stagger(.065), ease: [.16, 1, .3, 1] });
-  animate(images, { clipPath: ['inset(0 0 100% 0)', 'inset(0 0 0% 0)'], scale: [1.025, 1] }, { duration: .68, delay: stagger(.065), ease: [.16, 1, .3, 1] });
-  animate(details, { opacity: [0, 1], y: [9, 0] }, { duration: .36, delay: stagger(.065, { startDelay: .16 }), ease: [.16, 1, .3, 1] });
+  const ease = [.22, 1, .36, 1];
+  animate(cards, { opacity: [0, 1], y: [12, 0], scale: [.992, 1] }, { duration: .64, delay: stagger(.05), ease });
+  animate(images, { opacity: [.76, 1], scale: [1.012, 1] }, { duration: .76, delay: stagger(.05), ease });
+  animate(details, { opacity: [0, 1], y: [5, 0] }, { duration: .46, delay: stagger(.05, { startDelay: .1 }), ease });
 }
 function renderProducts() {
   const shown = visibleProducts();
