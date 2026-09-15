@@ -71,6 +71,7 @@ uxStyle.textContent = `
   :focus-visible { outline: 2px solid #111; outline-offset: 3px; }
   a, a:link, a:visited, a:hover, a:active { color: inherit !important; -webkit-text-fill-color: currentColor; }
   a, button { -webkit-tap-highlight-color: transparent; }
+  .hero-link, .acid-button { color: #f6f6f3 !important; -webkit-text-fill-color: #f6f6f3; }
   h1, h2, .footer-word { letter-spacing: .005em !important; }
   h1, h2 { line-height: .96 !important; }
   .product-image { background-size: contain !important; background-repeat: no-repeat; background-color: #f0f0f0; }
@@ -78,7 +79,7 @@ uxStyle.textContent = `
   .balance-hero { min-height: 650px; display: grid; grid-template-columns: 1fr 1fr; border-bottom: 2px solid #111; }
   .balance-hero > div { padding: 9vw 6vw; display: flex; flex-direction: column; align-items: flex-start; }
   .balance-hero h1 { margin: 22px 0; font: clamp(62px,8vw,128px)/.82 Anton,sans-serif; }
-  .hero-word { position: relative; display: inline-block; width: 7.4ch; height: 1.06em; overflow: hidden; vertical-align: top; }
+  .hero-word { position: relative; display: inline-block; width: 7.4ch; height: .88em; overflow: hidden; vertical-align: -.02em; }
   .hero-word-item { position: absolute; top: 0; left: 0; width: 100%; white-space: nowrap; line-height: 1; will-change: transform, filter, opacity; }
   .balance-hero > div > p:not(.mono) { max-width: 310px; margin: 0; font-size: 14px; line-height: 1.4; }
   .hero-link { display: flex; justify-content: space-between; width: 208px; margin-top: 32px; padding: 13px 15px; background: #111; color: #f6f6f3; font: 9px "DM Mono",monospace; }
@@ -353,7 +354,7 @@ if (heroWord && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) 
   setInterval(() => {
     const wordItem = heroWord.querySelector('.hero-word-item');
     heroWordIndex = (heroWordIndex + 1) % heroWords.length;
-    const timing = { duration: 440, easing: 'cubic-bezier(.16, 1, .3, 1)', fill: 'forwards' };
+    const timing = { duration: 310, easing: 'cubic-bezier(.16, 1, .3, 1)', fill: 'forwards' };
     const exit = wordItem.animate([
       { transform: 'translateY(0) scaleY(1)', filter: 'blur(0px)', opacity: 1 },
       { transform: 'translateY(-112%) scaleY(.96)', filter: 'blur(2px)', opacity: .35 },
