@@ -71,7 +71,7 @@ uxStyle.textContent = `
   :focus-visible { outline: 2px solid #111; outline-offset: 3px; }
   a, a:link, a:visited, a:hover, a:active { color: inherit !important; -webkit-text-fill-color: currentColor; }
   a, button { -webkit-tap-highlight-color: transparent; }
-  .hero-link, .acid-button { color: #f6f6f3 !important; -webkit-text-fill-color: #f6f6f3; }
+  .hero-link, .hero-link:link, .hero-link:visited, .hero-link:hover, .hero-link:active, .acid-button, .acid-button:link, .acid-button:visited, .acid-button:hover, .acid-button:active { color: #f6f6f3 !important; -webkit-text-fill-color: #f6f6f3; }
   h1, h2, .footer-word { letter-spacing: .005em !important; }
   h1, h2 { line-height: .96 !important; }
   .product-image { background-size: contain !important; background-repeat: no-repeat; background-color: #f0f0f0; }
