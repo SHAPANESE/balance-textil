@@ -1,4 +1,3 @@
-import { TextMorph } from 'https://cdn.jsdelivr.net/npm/torph@0.1.3/+esm';
 import { animate, stagger } from 'https://cdn.jsdelivr.net/npm/motion@13.3.0/+esm';
 
 const products = [
@@ -190,23 +189,16 @@ floatingCart.innerHTML = `TU PEDIDO <b id="floatingBagCount">0</b>`;
 floatingCart.addEventListener('click', () => toggleCart(true));
 document.body.append(floatingCart);
 
-const countMorphs = ['bagCount', 'bagCountCart', 'floatingBagCount'].map((id) => new TextMorph({
-  element: document.getElementById(id),
-  duration: 260,
-  ease: 'cubic-bezier(.16, 1, .3, 1)',
-  locale: 'es-AR',
-}));
-const subtotalMorph = new TextMorph({
-  element: document.getElementById('subtotal'),
-  duration: 260,
-  ease: 'cubic-bezier(.16, 1, .3, 1)',
-  locale: 'es-AR',
-});
 const cartProgress = document.createElement('div');
 cartProgress.className = 'cart-progress';
 cartProgress.setAttribute('aria-label', 'Pasos del pedido');
 cartProgress.innerHTML = '<span class="is-current">1 PRENDA</span><span>2 DISEÑO</span><span>3 COTIZACIÓN</span>';
 document.querySelector('.cart-foot').prepend(cartProgress);
+function updateCounter(element, value) {
+  element.textContent = value;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  animate(element, { opacity: [.3, 1], y: [-4, 0], scale: [.82, 1] }, { duration: .24, ease: [.16, 1, .3, 1] });
+}
 
 const toast = document.createElement('div');
 toast.className = 'toast';
@@ -284,11 +276,11 @@ function renderProducts() {
 }
 function renderCart() {
   const count = bag.reduce((total, item) => total + item.quantity, 0);
-  countMorphs[0].update(`(${count})`);
-  countMorphs[1].update(count);
-  countMorphs[2].update(count);
+  updateCounter(document.querySelector('#bagCount'), `(${count})`);
+  updateCounter(document.querySelector('#bagCountCart'), count);
+  updateCounter(document.querySelector('#floatingBagCount'), count);
   const total = bag.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  subtotalMorph.update(total ? money.format(total) : 'A COTIZAR');
+  updateCounter(document.querySelector('#subtotal'), total ? money.format(total) : 'A COTIZAR');
   document.querySelector('#cartItems').innerHTML = bag.length ? bag.map((item) => `<div class="cart-item"><div class="cart-thumb ${item.image}" style="background-image:url('${item.imageAsset}')"></div><div><p>${item.type}</p><strong>${item.name}</strong><span>${item.colorName} / ${item.size} · ${priceLabel(item.price)}</span><div class="quantity" aria-label="Cantidad de ${item.name}"><button data-change="${item.lineId}" data-delta="-1" aria-label="Quitar una unidad">−</button><span>${item.quantity}</span><button data-change="${item.lineId}" data-delta="1" aria-label="Sumar una unidad">+</button></div></div><button data-remove="${item.lineId}" aria-label="Quitar ${item.name} de la bolsa">×</button></div>`).join('') : '<p class="empty">TU PEDIDO ESTÁ VACÍO.<br/><a href="#shop" class="empty-action" data-close-cart>VER PRENDAS ↓</a></p>';
 }
 function toggleCart(open) { cart.classList.toggle('is-open', open); overlay.classList.toggle('is-open', open); document.querySelector('.floating-cart')?.classList.toggle('is-hidden', open); cart.setAttribute('aria-hidden', String(!open)); }
