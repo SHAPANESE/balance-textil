@@ -95,7 +95,7 @@ uxStyle.textContent = `
   .hero-link, .hero-link:link, .hero-link:visited, .hero-link:hover, .hero-link:active, .acid-button, .acid-button:link, .acid-button:visited, .acid-button:hover, .acid-button:active { color: #f6f6f3 !important; -webkit-text-fill-color: #f6f6f3; }
   h1, h2, .footer-word { letter-spacing: .005em !important; }
   h1, h2 { line-height: .96 !important; }
-  .product-image { background-size: contain !important; background-repeat: no-repeat; background-color: #f0f0f0; }
+  .product-image { overflow: hidden; background-size: contain !important; background-repeat: no-repeat; background-color: #f0f0f0; }
   .product-image.is-color-selected { filter: grayscale(0) contrast(1.05) !important; }
   .product-card { animation: none; }
   .balance-hero { min-height: 650px; display: grid; grid-template-columns: 1fr 1fr; border-bottom: 2px solid #111; }
