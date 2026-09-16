@@ -323,6 +323,39 @@ function addProduct(product, size, colorIndex, quantity = 1) {
   showToast(`${product.name} AGREGADO A LA BOLSA.`);
 }
 
+function swapCardImage(image, source) {
+  const applySource = () => {
+    image.style.setProperty('--product-image', `url('${source}')`);
+    image.style.backgroundImage = 'var(--product-image)';
+  };
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return applySource();
+
+  const swapId = `${Date.now()}-${Math.random()}`;
+  image.dataset.variantSwap = swapId;
+  const preload = new Image();
+  let started = false;
+  const start = () => {
+    if (started || image.dataset.variantSwap !== swapId) return;
+    started = true;
+    const fadeOut = image.animate([
+      { opacity: 1, transform: 'scale(1)', filter: 'grayscale(0) contrast(1.05)' },
+      { opacity: .42, transform: 'scale(.986)', filter: 'grayscale(.15) contrast(1)' },
+    ], { duration: 230, easing: 'cubic-bezier(.22,.61,.36,1)', fill: 'forwards' });
+    fadeOut.finished.then(() => {
+      if (image.dataset.variantSwap !== swapId) return;
+      applySource();
+      image.animate([
+        { opacity: .42, transform: 'scale(.986)', filter: 'grayscale(.15) contrast(1)' },
+        { opacity: 1, transform: 'scale(1)', filter: 'grayscale(0) contrast(1.05)' },
+      ], { duration: 500, easing: 'cubic-bezier(.16,1,.3,1)', fill: 'forwards' }).finished.then(() => image.getAnimations().forEach((animation) => animation.cancel()));
+    });
+  };
+  preload.addEventListener('load', start, { once: true });
+  preload.addEventListener('error', applySource, { once: true });
+  preload.src = source;
+  if (preload.complete) start();
+}
+
 productGrid.addEventListener('click', (event) => {
   const color = event.target.closest('[data-card-color]');
   if (color) {
@@ -333,8 +366,7 @@ productGrid.addEventListener('click', (event) => {
     const card = color.closest('.product-card');
     selectedCardColors.set(productId, colorIndex);
     const image = card.querySelector('.product-image');
-    image.style.setProperty('--product-image', `url('${catalogImage(product, colorIndex)}')`);
-    image.style.backgroundImage = 'var(--product-image)';
+    swapCardImage(image, catalogImage(product, colorIndex));
     image.classList.add('is-color-selected');
     card.querySelector('small').textContent = product.colorNames[colorIndex];
     card.querySelectorAll('[data-card-color]').forEach((swatch) => { const selected = swatch === color; swatch.classList.toggle('is-selected', selected); swatch.setAttribute('aria-pressed', String(selected)); });
