@@ -96,6 +96,7 @@ uxStyle.textContent = `
   h1, h2, .footer-word { letter-spacing: .005em !important; }
   h1, h2 { line-height: .96 !important; }
   .product-image { background-size: contain !important; background-repeat: no-repeat; background-color: #f0f0f0; }
+  .product-image.is-color-selected { filter: grayscale(0) contrast(1.05) !important; }
   .product-card { animation: none; }
   .balance-hero { min-height: 650px; display: grid; grid-template-columns: 1fr 1fr; border-bottom: 2px solid #111; }
   .balance-hero > div { padding: 9vw 6vw; display: flex; flex-direction: column; align-items: flex-start; }
@@ -334,6 +335,7 @@ productGrid.addEventListener('click', (event) => {
     const image = card.querySelector('.product-image');
     image.style.setProperty('--product-image', `url('${catalogImage(product, colorIndex)}')`);
     image.style.backgroundImage = 'var(--product-image)';
+    image.classList.add('is-color-selected');
     card.querySelector('small').textContent = product.colorNames[colorIndex];
     card.querySelectorAll('[data-card-color]').forEach((swatch) => { const selected = swatch === color; swatch.classList.toggle('is-selected', selected); swatch.setAttribute('aria-pressed', String(selected)); });
     return;
